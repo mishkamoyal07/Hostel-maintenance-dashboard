@@ -8,7 +8,13 @@ This document details the architectural design, data flows, core algorithms, and
 
 HostelOps is built with a decoupled client-server architecture designed for high responsiveness, local offline capabilities, and instant synchronization.
 
-![System Architecture](mermaid_flowchart.png)
+![System Architecture Flowchart](mermaid_flowchart.png)
+
+---
+
+### 🎨 System Component Schematic
+
+![System Schematic](system_architecture.png)
 
 ---
 
