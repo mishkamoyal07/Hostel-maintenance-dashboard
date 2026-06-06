@@ -1049,15 +1049,33 @@ function startVoiceInput() {
     label.innerText = '● Listening...';
     
     recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById('student-desc').value = transcript;
-        realtimeNLPAnalysis();
+        let interimTranscript = '';
+        let finalTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const result = event.results[i];
+            if (result.isFinal) {
+                finalTranscript += result[0].transcript;
+            } else {
+                interimTranscript += result[0].transcript;
+            }
+        }
+
+        // Show interim in textarea for live feedback, but only NLP-analyze on final
+        const textarea = document.getElementById('student-desc');
+        if (finalTranscript) {
+            textarea.value = finalTranscript;
+            realtimeNLPAnalysis();
+        } else if (interimTranscript) {
+            textarea.value = interimTranscript;
+        }
     };
     
     recognition.onend = () => {
         state.voiceActive = false;
         btn.classList.remove('voice-active');
         label.innerText = 'Voice Input';
+        // Always run NLP on whatever is in the box when listening stops
         realtimeNLPAnalysis();
     };
     
