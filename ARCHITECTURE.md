@@ -8,39 +8,40 @@ This document details the architectural design, data flows, core algorithms, and
 
 HostelOps is built with a decoupled client-server architecture designed for high responsiveness, local offline capabilities, and instant synchronization.
 
-```mermaid
-graph TD
-    %% Frontend Components
-    subgraph Frontend [Web Client (HTML5 / CSS3 / ES6)]
-        UI[Interactive UI Views]
-        WebSpeech[Web Speech API]
-        FileReader[File/OCR Scanner]
-        State[State Manager]
-        NLP_Preview[Client-Side NLP Preview]
-    end
-
-    %% Backend Components
-    subgraph Backend [FastAPI Server (Python)]
-        Router[REST API Router]
-        NLP_Engine[NLP Keyword Classifier]
-        AssignEngine[Smart Dispatcher]
-        PriorityEngine[Priority Scoring Engine]
-    end
-
-    %% Database Component
-    subgraph Database [Storage Layer]
-        SQLite[(SQLite Database)]
-    end
-
-    %% Connections
-    UI -->|1. User Interaction| State
-    WebSpeech -->|Voice Text| UI
-    FileReader -->|Image Meta| UI
-    UI -->|2. REST Requests (Fetch API)| Router
-    Router -->|NLP Analysis| NLP_Engine
-    Router -->|Dynamic Prioritization| PriorityEngine
-    Router -->|Auto-Dispatch| AssignEngine
-    Router -->|CRUD Operations| SQLite
+```text
+  +-------------------------------------------------------------+
+  |              FRONTEND: Web Client (HTML5 / CSS / JS)        |
+  |                                                             |
+  |  [ Web Speech API ] ---> [ UI Views ] <--- [ File Scanner ] |
+  |                              |                              |
+  |                              v                              |
+  |                      [ State Manager ]                      |
+  +------------------------------|------------------------------+
+                                 |
+                        2. Fetch API Requests
+                                 |
+                                 v
+  +-------------------------------------------------------------+
+  |                   BACKEND: FastAPI Server                   |
+  |                                                             |
+  |                     [ REST API Router ]                     |
+  |                              |                              |
+  |           +------------------+------------------+           |
+  |           |                  |                  |           |
+  |           v                  v                  v           |
+  |    [ NLP Engine ]     [ Priority Engine ] [ Smart Dispatch] |
+  +-----------|------------------|------------------|-----------+
+              |                  |                  |
+              +------------------+------------------+
+                                 |
+                           Database CRUD
+                                 |
+                                 v
+  +-------------------------------------------------------------+
+  |             DATABASE STORAGE: SQLite Database               |
+  |                                                             |
+  |                   hostel_maintenance.db                     |
+  +-------------------------------------------------------------+
 ```
 
 ---
