@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hostel Maintenance Prioritization Dashboard</title>
+    <meta name="description" content="An intelligent hostel maintenance management dashboard leveraging AI scoring algorithms to prioritize, assign, and track facilities maintenance tasks.">
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN for Analytics Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div>
+                <div class="brand-section">
+                    <div class="brand-logo-container">
+                        <!-- Custom SVG Logo: Integrated Shield & Sparkle (representing AI & Maintenance protection) -->
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3zm0 6c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 7c2.76 0 5 1.79 5 4v1H7v-1c0-2.21 2.24-4 5-4z" />
+                            <path d="M18 6l-1.5 1.5L18 9l1.5-1.5L18 6z" fill="#06d6a0"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="brand-title">HostelOps</h1>
+                        <p class="brand-subtitle">Hostel AI Admin</p>
+                    </div>
+                </div>
+
+                <nav>
+                    <ul class="nav-links">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="nav-dashboard" onclick="switchView('dashboard')">
+                                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <rect x="3" y="3" width="7" height="9" rx="1" />
+                                    <rect x="14" y="3" width="7" height="5" rx="1" />
+                                    <rect x="14" y="12" width="7" height="9" rx="1" />
+                                    <rect x="3" y="16" width="7" height="5" rx="1" />
+                                </svg>
+                                <span>Warden Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="nav-student" onclick="switchView('student')">
+                                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Student Reporting</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="nav-analytics" onclick="switchView('analytics')">
+                                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
+                                </svg>
+                                <span>AI Analytics</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">AW</div>
+                    <div>
+                        <p class="user-name">Alex Warden</p>
+                        <p class="user-role">Lead Warden, Block-A</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace Viewport -->
+        <main class="main-content">
+            <!-- HEADER -->
+            <header class="header-container">
+                <div>
+                    <h2 class="page-title" id="view-title">Maintenance Priorities</h2>
+                    <p class="page-subtitle" id="view-subtitle">AI-assisted issue management &amp; workflow dispatch.</p>
+                </div>
+                <div class="actions-group">
+                    <button class="btn btn-primary" onclick="seedDemoTicket()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Simulate Ticket
+                    </button>
+                </div>
+            </header>
+
+            <!-- ==========================================
+                 VIEW 1: WARDEN DASHBOARD
+                 ========================================== -->
+            <section id="view-dashboard" class="view-section active">
+                <!-- KPI Statistics Grid -->
+                <div class="stats-grid">
+                    <div class="glass-panel stat-card critical" id="stat-critical-card">
+                        <div class="stat-header">
+                            <span>Critical Safety Risks</span>
+                            <svg class="stat-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        <div class="stat-value" id="stat-critical-count">3</div>
+                        <div class="stat-change change-down" id="stat-critical-trend">
+                            <span>Requires Immediate Action</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel stat-card pending">
+                        <div class="stat-header">
+                            <span>Pending Dispatch</span>
+                            <svg class="stat-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="stat-value" id="stat-pending-count">5</div>
+                        <div class="stat-change change-neutral" id="stat-pending-trend">
+                            <span>Waiting for Technician</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel stat-card resolved">
+                        <div class="stat-header">
+                            <span>Resolved Today</span>
+                            <svg class="stat-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="stat-value" id="stat-resolved-count">12</div>
+                        <div class="stat-change change-up" id="stat-resolved-trend">
+                            <span>+15% efficiency gain</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel stat-card ai-optimized">
+                        <div class="stat-header">
+                            <span>AI Optimization Score</span>
+                            <svg class="stat-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <div class="stat-value" id="stat-optimization-score">94.8%</div>
+                        <div class="stat-change change-up">
+                            <span>Target: &gt;90% SLA met</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Heatmap + Forecast Row -->
+                <div class="heatmap-forecast-row">
+                    <!-- Floor Heatmap -->
+                    <div class="glass-panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                                Hostel Complaint Heatmap
+                            </h3>
+                            <span class="badge-ai">Live Floor View</span>
+                        </div>
+                        <div id="floor-heatmap" class="heatmap-grid">
+                            <!-- Dynamically injected -->
+                        </div>
+                    </div>
+
+                    <!-- Predictive Forecast -->
+                    <div class="glass-panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
+                                </svg>
+                                Predicted Issues Next Week
+                            </h3>
+                            <span class="badge-ai">Predictive AI</span>
+                        </div>
+                        <div id="forecast-list" class="forecast-list">
+                            <!-- Dynamically injected -->
+                        </div>
+                    </div>
+
+                    <!-- Technician Leaderboard -->
+                    <div class="glass-panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                                </svg>
+                                Top Technicians
+                            </h3>
+                            <span class="badge-ai">Performance</span>
+                        </div>
+                        <div id="leaderboard-list" class="leaderboard-list">
+                            <!-- Dynamically injected -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Weight Tuning Panel (single, no logs panel) -->
+                <div class="ai-config-section-solo">
+                    <div class="glass-panel interactive">
+                        <div class="panel-header">
+                            <h3 class="panel-title">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                </svg>
+                                AI Weight Tuning
+                            </h3>
+                            <span class="badge-ai">Engine V1.2</span>
+                        </div>
+                        <div class="weight-controller">
+                            <div class="weight-row">
+                                <div class="weight-info">
+                                    <span class="weight-name">Safety &amp; Hazard</span>
+                                    <span class="weight-val" id="val-weight-safety">40%</span>
+                                </div>
+                                <input type="range" id="weight-safety" min="0" max="100" value="40" oninput="updateWeights()">
+                            </div>
+                            <div class="weight-row">
+                                <div class="weight-info">
+                                    <span class="weight-name">Student Disruption</span>
+                                    <span class="weight-val" id="val-weight-disruption">30%</span>
+                                </div>
+                                <input type="range" id="weight-disruption" min="0" max="100" value="30" oninput="updateWeights()">
+                            </div>
+                            <div class="weight-row">
+                                <div class="weight-info">
+                                    <span class="weight-name">Response Urgency (Age)</span>
+                                    <span class="weight-val" id="val-weight-age">20%</span>
+                                </div>
+                                <input type="range" id="weight-age" min="0" max="100" value="20" oninput="updateWeights()">
+                            </div>
+                            <div class="weight-row">
+                                <div class="weight-info">
+                                    <span class="weight-name">Repair Cost Saving</span>
+                                    <span class="weight-val" id="val-weight-cost">10%</span>
+                                </div>
+                                <input type="range" id="weight-cost" min="0" max="100" value="10" oninput="updateWeights()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Workboard: Tickets and Technician list -->
+                <div class="dashboard-grid">
+                    <!-- Ticket Feed -->
+                    <div class="glass-panel">
+                        <div class="ticket-board-header">
+                            <h3 class="panel-title">Active Maintenance Queue</h3>
+                            <div class="filter-bar">
+                                <input type="text" id="search-bar" class="search-input" placeholder="Search issues, rooms..." oninput="filterTickets()">
+                                <select id="filter-category" class="select-filter" onchange="filterTickets()">
+                                    <option value="all">All Categories</option>
+                                    <option value="Plumbing">Plumbing</option>
+                                    <option value="Electrical">Electrical</option>
+                                    <option value="HVAC">HVAC</option>
+                                    <option value="Furniture">Furniture</option>
+                                    <option value="Cleaning">Cleaning</option>
+                                    <option value="Security">Security</option>
+                                </select>
+                                <select id="filter-priority" class="select-filter" onchange="filterTickets()">
+                                    <option value="all">All Priorities</option>
+                                    <option value="critical">Critical (Score 80+)</option>
+                                    <option value="high">High (Score 60-79)</option>
+                                    <option value="medium">Medium (Score 40-59)</option>
+                                    <option value="low">Low (Score &lt; 40)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Ticket List Wrapper -->
+                        <div class="ticket-list" id="ticket-queue">
+                            <!-- Dynamic Ticket Elements injected by app.js -->
+                        </div>
+                    </div>
+
+                    <!-- Side Panel: Technician Workload Board -->
+                    <div class="glass-panel staff-panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                Technician Allocation
+                            </h3>
+                            <button class="btn btn-primary btn-icon" title="Suggest AI Allocation" onclick="runAISmartAssign()">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="page-subtitle" style="font-size: 0.8rem; margin-top: -10px; margin-bottom: 10px;">Monitor available skills and current workload index.</p>
+                        
+                        <div class="staff-list" id="staff-roster">
+                            <!-- Staff cards injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 VIEW 2: STUDENT PORTAL (ISSUE REPORTING)
+                 ========================================== -->
+            <section id="view-student" class="view-section">
+                <!-- Emergency Alert Banner (hidden by default) -->
+                <div id="emergency-alert-banner" class="emergency-alert-banner" style="display:none;">
+                    <div class="emergency-alert-inner">
+                        <span class="emergency-icon">🚨</span>
+                        <div>
+                            <strong>CRITICAL EMERGENCY DETECTED</strong>
+                            <p id="emergency-alert-text">Life safety keywords identified. Emergency maintenance team is being notified immediately.</p>
+                        </div>
+                        <button onclick="dismissEmergencyAlert()" class="emergency-dismiss">&times;</button>
+                    </div>
+                </div>
+
+                <!-- Duplicate Complaint Warning (hidden by default) -->
+                <div id="duplicate-warning" class="duplicate-warning" style="display:none;">
+                    <div class="duplicate-inner">
+                        <span>⚠️</span>
+                        <div>
+                            <strong>Similar Issue Already Reported</strong>
+                            <p id="duplicate-warning-text">A similar complaint was submitted recently.</p>
+                        </div>
+                        <button onclick="dismissDuplicateWarning()" class="duplicate-dismiss">&times;</button>
+                    </div>
+                </div>
+
+                <div class="student-view-container">
+                    <!-- Reporting Form -->
+                    <div class="glass-panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">File Maintenance Request</h3>
+                        </div>
+                        <form id="maintenance-form" onsubmit="submitStudentRequest(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="student-room">Room Number</label>
+                                    <input type="text" id="student-room" class="form-input" placeholder="e.g. A-304" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="student-category-select">Initial Category (AI Verified)</label>
+                                    <select id="student-category-select" class="select-filter form-input">
+                                        <option value="Unassigned">Auto-detecting...</option>
+                                        <option value="Plumbing">Plumbing</option>
+                                        <option value="Electrical">Electrical</option>
+                                        <option value="HVAC">HVAC</option>
+                                        <option value="Furniture">Furniture</option>
+                                        <option value="Cleaning">Cleaning</option>
+                                        <option value="Security">Security</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="student-urgency">Perceived Student Urgency</label>
+                                <select id="student-urgency" class="select-filter form-input" required>
+                                    <option value="Low">Low - Can wait a couple of days</option>
+                                    <option value="Medium" selected>Medium - Fix within 24 hours</option>
+                                    <option value="High">High - Impedes study / sleep / safety</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="student-desc" style="display:flex;align-items:center;gap:8px;">
+                                    Describe the Issue (Real-time AI NLP Scanner enabled)
+                                    <!-- Voice Input Button -->
+                                    <button type="button" id="voice-btn" class="voice-btn" onclick="startVoiceInput()" title="Voice Input">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                                        </svg>
+                                        <span id="voice-btn-label">Voice Input</span>
+                                    </button>
+                                </label>
+                                <textarea id="student-desc" class="form-textarea" rows="4" placeholder="Detail the problem (e.g. 'water leaking from room washroom, electric sparks near room fan'). AI scans for hazard keywords automatically." oninput="realtimeNLPAnalysis()" required></textarea>
+                            </div>
+
+                            <!-- Image Upload Drag/Drop area -->
+                            <div class="form-group">
+                                <label>Upload Photo of Issue (AI Vision Damage Detection)</label>
+                                <div class="upload-container" onclick="triggerFileInput()" id="dropzone">
+                                    <svg class="upload-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <p class="upload-text">Click or drag &amp; drop image file to analyze</p>
+                                    <p class="upload-subtext">AI Vision will detect water leakage, rust, electrical damage, and more</p>
+                                    
+                                    <!-- Hidden File Input -->
+                                    <input type="file" id="file-uploader" class="file-input-hidden" accept="image/*" onchange="simulateOCRScan(event)">
+                                    
+                                    <!-- Mock Scanner Overlay -->
+                                    <div class="scanner-overlay" id="scanner">
+                                        <div class="scanning-spinner"></div>
+                                        <p style="color: var(--accent-purple); font-weight: 700; letter-spacing: 1px;">AI VISION ANALYSIS RUNNING...</p>
+                                        <div class="scanner-line"></div>
+                                    </div>
+                                </div>
+                                <div id="upload-preview" style="display: none;"></div>
+                                <!-- Image detection result panel -->
+                                <div id="image-detection-result" class="image-detection-result" style="display:none;"></div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 10px; justify-content: center; font-size: 1rem;">
+                                Submit Report to AI Queue
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Live AI Assessment Dashboard Widget -->
+                    <div class="live-ai-assessment">
+                        <div class="glass-panel">
+                            <div class="panel-header">
+                                <h3 class="panel-title">
+                                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                    </svg>
+                                    Live AI Assessment
+                                </h3>
+                                <span class="badge-ai">Predictive Model</span>
+                            </div>
+                            <p class="page-subtitle" style="font-size: 0.8rem; margin-top: -10px; margin-bottom: 1.5rem;">See how the AI model interprets your request in real-time.</p>
+
+                            <div class="assessment-results-box">
+                                <div class="assessment-title">
+                                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                    Calculated Real-Time Metrics
+                                </div>
+                                <div class="assessment-grid">
+                                    <div class="assessment-item">
+                                        <span class="assessment-label">Predicted Category</span>
+                                        <span class="assessment-value" id="ai-pred-category">Pending input...</span>
+                                    </div>
+                                    <div class="assessment-item">
+                                        <span class="assessment-label">AI Priority Score</span>
+                                        <span class="assessment-value critical" id="ai-pred-score">--</span>
+                                    </div>
+                                    <div class="assessment-item">
+                                        <span class="assessment-label">Safety Risk Probability</span>
+                                        <span class="assessment-value" id="ai-pred-hazard">--</span>
+                                    </div>
+                                    <div class="assessment-item">
+                                        <span class="assessment-label">Disruption Index</span>
+                                        <span class="assessment-value" id="ai-pred-disruption">--</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- AI Explainability "Why?" Panel -->
+                            <div id="ai-why-panel" class="ai-why-panel" style="display:none;">
+                                <div class="ai-why-title">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Why this classification?
+                                </div>
+                                <ul class="ai-why-list" id="ai-why-list">
+                                    <!-- Populated dynamically -->
+                                </ul>
+                            </div>
+
+                            <!-- Cost Prediction Box -->
+                            <div id="cost-prediction-box" class="cost-prediction-box" style="display:none;">
+                                <div class="cost-prediction-title">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Predicted Repair Cost
+                                </div>
+                                <div class="cost-range" id="cost-range-value">₹500 – ₹1,200</div>
+                                <div class="cost-confidence" id="cost-confidence-value">Confidence: 88%</div>
+                            </div>
+
+                            <div style="margin-top: 1.5rem;">
+                                <h4 style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px;">Confidence Details</h4>
+                                <div class="diagnosis-grid" style="padding: 0.75rem; font-size: 0.8rem;">
+                                    <div class="diagnosis-item">
+                                        <span class="diagnosis-label">Model Confidence</span>
+                                        <span class="diagnosis-val" id="ai-confidence">--</span>
+                                    </div>
+                                    <div class="diagnosis-item">
+                                        <span class="diagnosis-label">Detected Keywords</span>
+                                        <span class="diagnosis-val mono" id="ai-keywords" style="font-size: 0.75rem;">None</span>
+                                    </div>
+                                    <div class="diagnosis-item">
+                                        <span class="diagnosis-label">Similar Past Cases</span>
+                                        <span class="diagnosis-val" id="ai-similar-cases">--</span>
+                                    </div>
+                                    <div class="diagnosis-item">
+                                        <span class="diagnosis-label">Est. Damage Cost</span>
+                                        <span class="diagnosis-val text-cyan" id="ai-damage-cost">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 VIEW 3: AI ANALYTICS
+                 ========================================== -->
+            <section id="view-analytics" class="view-section">
+                <!-- Toprow stats review -->
+                <div class="analytics-container">
+                    <div class="glass-panel analytics-card">
+                        <div class="panel-header">
+                            <h3 class="panel-title">Issues Breakdown by Category</h3>
+                        </div>
+                        <div class="analytics-chart-wrapper">
+                            <canvas id="category-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-panel analytics-card">
+                        <div class="panel-header">
+                            <h3 class="panel-title">SLA Compliance Trends (Response Time)</h3>
+                        </div>
+                        <div class="analytics-chart-wrapper">
+                            <canvas id="resolution-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel" style="margin-bottom: 2rem;">
+                    <div class="panel-header">
+                        <h3 class="panel-title">AI Optimization Insights</h3>
+                    </div>
+                    <div class="diagnosis-grid" style="grid-template-columns: repeat(3, 1fr); padding: 1.5rem;">
+                        <div>
+                            <span class="diagnosis-label" style="font-size: 0.85rem;">Average Response Time Reduction</span>
+                            <span class="diagnosis-val" style="font-size: 1.5rem; color: var(--accent-cyan); font-weight: 800;">-34.6%</span>
+                            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Since AI Smart Prioritization deployment in block-A.</p>
+                        </div>
+                        <div>
+                            <span class="diagnosis-label" style="font-size: 0.85rem;">Preventative Action Triggers</span>
+                            <span class="diagnosis-val" style="font-size: 1.5rem; color: var(--accent-purple); font-weight: 800;">18 Issues</span>
+                            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Minor leak warnings raised before structural damage occurred.</p>
+                        </div>
+                        <div>
+                            <span class="diagnosis-label" style="font-size: 0.85rem;">Technician Workload Balance</span>
+                            <span class="diagnosis-val" style="font-size: 1.5rem; color: var(--accent-blue); font-weight: 800;">Optimal (0.12 Gini)</span>
+                            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Smart load assignment balances workload across staff.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ==========================================
+         EMERGENCY ALERT OVERLAY
+         ========================================== -->
+    <div id="emergency-overlay" class="emergency-overlay" style="display:none;">
+        <div class="emergency-overlay-content">
+            <div class="emergency-pulse-ring"></div>
+            <div class="emergency-pulse-ring delay1"></div>
+            <div class="emergency-icon-big">🚨</div>
+            <h2 class="emergency-title">CRITICAL EMERGENCY ALERT</h2>
+            <p class="emergency-subtitle" id="emergency-overlay-text">Life safety keywords detected in complaint.</p>
+            <div class="emergency-actions-box">
+                <p>🔔 Emergency maintenance team notified</p>
+                <p>📞 Warden hotline alerted automatically</p>
+                <p>🏥 Safety protocol activated for Block A</p>
+            </div>
+            <button onclick="dismissEmergencyOverlay()" class="btn btn-primary" style="margin-top:1.5rem;">Acknowledge &amp; Continue</button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         AI EXPLANATION MODAL (WARDEN TICKET DETAIL)
+         ========================================== -->
+    <div class="modal-overlay" id="ai-modal">
+        <div class="modal-content modal-content-wide">
+            <button class="modal-close" onclick="closeAIModal()">&times;</button>
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-ticket-title">Ticket AI Diagnosis &amp; Explainability</h3>
+                <p class="page-subtitle" id="modal-ticket-room">Room A-304 | Category: Plumbing</p>
+            </div>
+            <div class="modal-body">
+                <!-- Two-column layout -->
+                <div class="modal-two-col">
+                    <!-- Left: Scoring + AI Reasoning -->
+                    <div>
+                        <h4 class="modal-section-title">Scoring Breakdown</h4>
+                        <div class="diagnosis-grid">
+                            <div class="diagnosis-item">
+                                <span class="diagnosis-label">Overall Score</span>
+                                <span class="diagnosis-val text-purple" id="modal-score" style="font-size: 1.25rem; font-weight: 800;">94/100</span>
+                            </div>
+                            <div class="diagnosis-item">
+                                <span class="diagnosis-label">Safety Hazard Level</span>
+                                <span class="diagnosis-val" id="modal-hazard">Critical (85%)</span>
+                            </div>
+                            <div class="diagnosis-item">
+                                <span class="diagnosis-label">Student Disruption Index</span>
+                                <span class="diagnosis-val" id="modal-disruption">High (90%)</span>
+                            </div>
+                            <div class="diagnosis-item">
+                                <span class="diagnosis-label">Ticket Age (Snooze Penalty)</span>
+                                <span class="diagnosis-val" id="modal-age">0 hours (0% penalty)</span>
+                            </div>
+                            <div class="diagnosis-item">
+                                <span class="diagnosis-label">Estimated Cost Factor</span>
+                                <span class="diagnosis-val" id="modal-cost">Low (₹200 estimated)</span>
+                            </div>
+                            <div class="diagnosis-item">
+                                <span class="diagnosis-label">Assigned Priority Class</span>
+                                <span class="status-badge" id="modal-priority-class" style="width: fit-content; margin-top: 4px;">CRITICAL</span>
+                            </div>
+                        </div>
+
+                        <!-- AI Explainability "Why?" Box -->
+                        <div class="ai-why-modal-box" style="margin-top:1rem;">
+                            <div class="ai-why-modal-title">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Why this priority?
+                            </div>
+                            <ul class="ai-why-list-modal" id="modal-why-list">
+                                <!-- populated dynamically -->
+                            </ul>
+                        </div>
+
+                        <div class="ai-recommendation-box" style="margin-top:1rem;">
+                            <div class="ai-recommendation-title">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                AI Reasoning &amp; Context Clues
+                            </div>
+                            <p class="ai-recommendation-text" id="modal-reasoning">
+                                Detected urgent NLP tokens "flooding", "burst pipe". Calculated high threat to electrical circuits due to moisture proximity. Recommended immediate plumber dispatch.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Right: Timeline + Technician Recommendation -->
+                    <div>
+                        <!-- Complaint Timeline -->
+                        <h4 class="modal-section-title">Complaint Timeline</h4>
+                        <div class="complaint-timeline" id="complaint-timeline">
+                            <!-- Populated dynamically -->
+                        </div>
+
+                        <!-- Technician Recommendation Engine -->
+                        <h4 class="modal-section-title" style="margin-top:1.25rem;">Recommended Technician</h4>
+                        <div class="tech-recommendation-card" id="tech-recommendation-card">
+                            <div class="tech-rec-header">
+                                <div class="avatar" id="modal-sug-avatar" style="border-color: var(--accent-cyan); width: 40px; height: 40px; font-size: 0.85rem;">MB</div>
+                                <div style="flex-grow:1;">
+                                    <p class="staff-name" id="modal-sug-name" style="font-size: 0.9rem;">Mario Bros (Plumber)</p>
+                                    <p class="staff-specialty" id="modal-sug-specialty" style="font-size: 0.75rem;">Active load: 1 task (Light)</p>
+                                </div>
+                                <div class="tech-confidence-badge" id="modal-confidence-badge">91%</div>
+                            </div>
+                            <div class="tech-rec-reasons" id="modal-tech-reasons">
+                                <!-- Populated dynamically -->
+                            </div>
+                            <button class="btn btn-primary" id="modal-assign-btn" style="width:100%;justify-content:center;margin-top:0.75rem;" onclick="assignSuggestedTechnician()">Assign Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         AI CHAT ASSISTANT (Floating Widget)
+         ========================================== -->
+    <div id="ai-chat-widget" class="ai-chat-widget">
+        <div id="ai-chat-panel" class="ai-chat-panel" style="display:none;">
+            <div class="ai-chat-header">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <div class="ai-chat-avatar">AI</div>
+                    <div>
+                        <span class="ai-chat-name">Hostel AI Assistant</span>
+                        <span class="ai-chat-status">● Online</span>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="ai-chat-close">&times;</button>
+            </div>
+            <div class="ai-chat-messages" id="ai-chat-messages">
+                <div class="chat-msg ai-msg">
+                    <span>👋 Hi! I'm your Hostel AI assistant. Ask me anything about maintenance tickets, technicians, or complaints!</span>
+                    <div class="chat-suggestions">
+                        <button onclick="sendChatSuggestion(this)" class="chat-suggestion-btn">Which room has most complaints?</button>
+                        <button onclick="sendChatSuggestion(this)" class="chat-suggestion-btn">Show unresolved electrical issues</button>
+                        <button onclick="sendChatSuggestion(this)" class="chat-suggestion-btn">Which technician is overloaded?</button>
+                    </div>
+                </div>
+            </div>
+            <div class="ai-chat-input-row">
+                <input type="text" id="ai-chat-input" class="ai-chat-input" placeholder="Ask about complaints, technicians..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+                <button onclick="sendChatMessage()" class="ai-chat-send-btn">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <button onclick="toggleChat()" class="ai-chat-fab" id="ai-chat-fab" title="Ask Hostel AI">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+            <span>Ask Hostel AI</span>
+        </button>
+    </div>
+
+    <!-- Core App Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
