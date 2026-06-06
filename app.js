@@ -948,6 +948,12 @@ function realtimeNLPAnalysis() {
         costBox.style.display = 'block';
         document.getElementById('cost-range-value').innerText = matchedRule.costRange;
         document.getElementById('cost-confidence-value').innerText = `Confidence: ${matchedRule.costConfidence}%`;
+    } else {
+        // Hide panels if no NLP rule matched
+        document.getElementById('ai-why-panel').style.display = 'none';
+        document.getElementById('cost-prediction-box').style.display = 'none';
+        document.getElementById('ai-similar-cases').innerText = '--';
+        document.getElementById('ai-damage-cost').innerText = '--';
     }
 }
 
