@@ -128,11 +128,6 @@ cd hostel-maintenance-dashboard
 ### Step 2 — Install Python dependencies
 
 ```bash
-pip install fastapi uvicorn pydantic
-```
-
-Or if a `requirements.txt` exists:
-```bash
 pip install -r requirements.txt
 ```
 
@@ -158,79 +153,20 @@ http://localhost:8000
 
 ---
 
-## 🌐 Sharing the App — How Others Can Access It
+## 🌐 Deploying to Render (Cloud Hosting)
 
-### Option A: Same Wi-Fi Network (Easiest for Hackathon Demo)
+This project is fully configured for a 1-click cloud deployment on **Render**:
 
-> Share the app with anyone on the **same Wi-Fi network** (same room/lab).
-
-1. Find your computer's local IP address:
-   ```powershell
-   # Windows
-   ipconfig
-   # Look for "IPv4 Address" e.g. 192.168.1.42
-   ```
-   ```bash
-   # Mac/Linux
-   ifconfig | grep "inet "
-   ```
-
-2. The server already binds to `0.0.0.0` (all interfaces), so others can access:
-   ```
-   http://192.168.1.42:8000
-   ```
-   Replace `192.168.1.42` with **your actual IP address**.
-
-3. Make sure **Windows Firewall** allows port 8000:
-   ```powershell
-   netsh advfirewall firewall add rule name="HostelOps" dir=in action=allow protocol=TCP localport=8000
-   ```
-
-### Option B: ngrok — Public URL (Works Globally, Free)
-
-> Share a public URL that anyone in the world can access.
-
-1. Download ngrok: [ngrok.com/download](https://ngrok.com/download)
-
-2. With the server running (`python main.py`), in a **new terminal**:
-   ```bash
-   ngrok http 8000
-   ```
-
-3. ngrok gives you a public URL like:
-   ```
-   https://abc123.ngrok-free.app
-   ```
-
-4. Share this URL — judges, teammates, anyone can open it in their browser.
-
-> ⚠️ The ngrok URL is temporary (resets when you close ngrok). For permanent hosting, see Option C.
-
-### Option C: Deploy to a Cloud Server (Permanent)
-
-Deploy to **Railway**, **Render**, or **Heroku** for a permanent public URL.
-
-#### Deploy to Render (Free tier):
-
-1. Push your code to GitHub
-2. Go to [render.com](https://render.com) → New → Web Service
-3. Set:
-   - **Build Command**: `pip install fastapi uvicorn pydantic`
-   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-4. Your app gets a permanent URL like `https://hostelops.onrender.com`
-
-#### Deploy to Railway (Free tier):
-
-```bash
-npm install -g @railway/cli
-railway login
-railway init
-railway up
-```
+1. Push your code to your **GitHub** repository.
+2. Go to **[Render.com](https://render.com/)** and sign in.
+3. Click **New +** ➔ **Web Service** and connect your repository.
+4. Render will automatically detect the **Dockerfile** and configure the environment.
+5. Choose the **Free** tier and click **Deploy**.
+6. Render will build and launch your container, providing a permanent `https://<your-app>.onrender.com` link.
 
 ---
 
-## 🎮 Demo Instructions (For Judges / Evaluators)
+## 🎮 Demo Instructions 
 
 ### Demo Flow 1 — AI Classification & Explainability
 1. Click **Student Reporting** in the sidebar
